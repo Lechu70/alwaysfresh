@@ -14,35 +14,11 @@ function localIso(offsetDays = 0) {
   return `${y}-${m}-${day}`
 }
 
-const SEEDS = [
-  { name: 'Strawberries',  category: 'Produce', emoji: '🍓', offset: 0  },
-  { name: 'Spinach',       category: 'Produce', emoji: '🥬', offset: 1  },
-  { name: 'Whole Milk',    category: 'Dairy',   emoji: '🥛', offset: 3  },
-  { name: 'Carrots',       category: 'Produce', emoji: '🥕', offset: 4  },
-  { name: 'Apples',        category: 'Produce', emoji: '🍎', offset: 7  },
-  { name: 'Cheddar Cheese',category: 'Dairy',   emoji: '🧀', offset: 12 },
-]
-
-function createSeeds() {
-  const today = localIso()
-  return SEEDS.map(s => ({
-    item_id: makeId(),
-    name: s.name,
-    category: s.category,
-    emoji: s.emoji,
-    date_added: today,
-    expiration_date: localIso(s.offset),
-    status: 'active',
-    notes: '',
-  }))
-}
-
 export function getItems() {
   const raw = localStorage.getItem(KEY)
   if (raw === null) {
-    const seeds = createSeeds()
-    localStorage.setItem(KEY, JSON.stringify(seeds))
-    return seeds
+    localStorage.setItem(KEY, '[]')
+    return []
   }
   return JSON.parse(raw)
 }

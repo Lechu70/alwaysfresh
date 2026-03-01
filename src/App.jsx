@@ -13,11 +13,17 @@ function RequireAuth({ children }) {
   return children
 }
 
+function RequireGuest({ children }) {
+  const name = localStorage.getItem('userName')
+  if (name) return <Navigate to="/" replace />
+  return children
+}
+
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/welcome" element={<FirstLaunch />} />
+        <Route path="/welcome" element={<RequireGuest><FirstLaunch /></RequireGuest>} />
         <Route path="/" element={<RequireAuth><Home /></RequireAuth>} />
         <Route path="/pantry" element={<RequireAuth><Pantry /></RequireAuth>} />
         <Route path="/recipes" element={<RequireAuth><Recipes /></RequireAuth>} />

@@ -32,7 +32,17 @@ export default function Home() {
   )
 
   const [recipePreview] = useState(() =>
-    generateRecipes(getItems(), 2)
+    generateRecipes(getItems(), null)
+      .map(recipe => ({
+        ...recipe,
+        minDays: Math.min(...recipe.matchedItems.map(i => daysLeft(i.expiration_date))),
+      }))
+      .sort((a, b) =>
+        a.minDays !== b.minDays
+          ? a.minDays - b.minDays
+          : b.matchedItems.length - a.matchedItems.length
+      )
+      .slice(0, 2)
   )
 
   return (
