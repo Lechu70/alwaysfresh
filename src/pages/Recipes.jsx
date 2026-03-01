@@ -2,6 +2,7 @@ import { useState } from 'react'
 import BottomNav from '../components/BottomNav'
 import { getItems } from '../store/pantry'
 import { generateRecipes } from '../utils/recipeGenerator'
+import { generateAIRecipes } from '../utils/claudeApi'
 
 function RecipeCard({ recipe }) {
   const [expanded, setExpanded] = useState(false)
@@ -11,6 +12,7 @@ function RecipeCard({ recipe }) {
 
       <h3 className="text-[16px] font-bold text-gray-900 mb-3">
         {recipe.emoji} {recipe.title}
+        {recipe.isAI && <span className="ml-1.5 text-[12px] font-semibold text-purple-500">✨ AI</span>}
       </h3>
 
       <div className="flex flex-wrap gap-1.5 mb-4">
@@ -55,13 +57,28 @@ export default function Recipes() {
   const [allRecipes, setAllRecipes] = useState(() => generateRecipes(getItems(), null))
   const [searchQuery, setSearchQuery] = useState('')
   const [refreshed, setRefreshed] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
-  function handleRefresh() {
-    const fresh = generateRecipes(getItems(), null, true)
-    setAllRecipes(fresh)
+  async function handleRefresh() {
     setSearchQuery('')
-    setRefreshed(true)
-    setTimeout(() => setRefreshed(false), 1500)
+    if (!import.meta.env.VITE_CLAUDE_API_KEY) {
+      const fresh = generateRecipes(getItems(), null, true)
+      setAllRecipes(fresh)
+      setRefreshed(true)
+      setTimeout(() => setRefreshed(false), 1500)
+      return
+    }
+    setIsLoading(true)
+    try {
+      const aiRecipes = await generateAIRecipes(getItems())
+      setAllRecipes(aiRecipes.length > 0 ? aiRecipes : generateRecipes(getItems(), null, true))
+    } catch {
+      setAllRecipes(generateRecipes(getItems(), null, true))
+    } finally {
+      setIsLoading(false)
+      setRefreshed(true)
+      setTimeout(() => setRefreshed(false), 1500)
+    }
   }
 
   const q = searchQuery.trim().toLowerCase()
@@ -136,9 +153,13 @@ export default function Recipes() {
           </p>
           <button
             onClick={handleRefresh}
-            className="text-[12px] font-semibold text-green-600 bg-green-50 border border-green-200 rounded-full px-3 py-1.5 active:scale-95 transition-all"
+            disabled={isLoading}
+            className="text-[12px] font-semibold text-green-600 bg-green-50 border border-green-200 rounded-full px-3 py-1.5 active:scale-95 transition-all disabled:opacity-60"
           >
-            {refreshed ? '✓ Updated' : '↻ Refresh'}
+            {isLoading
+              ? <span className="inline-block animate-spin">↻</span>
+              : refreshed ? '✓ Updated' : '↻ Refresh'
+            }
           </button>
         </div>
 

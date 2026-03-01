@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { analyzeGroceryImage } from '../utils/claudeApi'
 
 function ScanFrame() {
   const corners = [
@@ -50,10 +51,30 @@ export default function Camera() {
     return () => streamRef.current?.getTracks().forEach(t => t.stop())
   }, [])
 
-  function goAnalyze() {
+  function captureFromVideo() {
+    const video = videoRef.current
+    const canvas = document.createElement('canvas')
+    canvas.width  = video.videoWidth  || 640
+    canvas.height = video.videoHeight || 480
+    canvas.getContext('2d').drawImage(video, 0, 0)
+    const dataUrl = canvas.toDataURL('image/jpeg', 0.85)
+    return { base64: dataUrl.split(',')[1], mimeType: 'image/jpeg' }
+  }
+
+  async function runAnalysis(base64, mimeType) {
     streamRef.current?.getTracks().forEach(t => t.stop())
     setAnalyzing(true)
-    setTimeout(() => navigate('/scan-results'), 1800)
+    try {
+      const items = await analyzeGroceryImage(base64, mimeType)
+      navigate('/scan-results', { state: { items } })
+    } catch {
+      navigate('/scan-results', { state: { items: null } })
+    }
+  }
+
+  async function goAnalyze() {
+    const { base64, mimeType } = captureFromVideo()
+    await runAnalysis(base64, mimeType)
   }
 
   function handleClose() {
@@ -62,8 +83,14 @@ export default function Camera() {
   }
 
   function handleFileUpload(e) {
-    if (!e.target.files[0]) return
-    goAnalyze()
+    const file = e.target.files[0]
+    if (!file) return
+    const reader = new FileReader()
+    reader.onload = async () => {
+      const base64 = reader.result.split(',')[1]
+      await runAnalysis(base64, file.type || 'image/jpeg')
+    }
+    reader.readAsDataURL(file)
   }
 
   if (analyzing) return <AnalyzingOverlay />

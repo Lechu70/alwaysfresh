@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { addItem } from '../store/pantry'
 
 function localIso(offsetDays = 0) {
@@ -148,7 +148,8 @@ function ItemCard({ item, hasError, onChange }) {
 
 export default function ScanResults() {
   const navigate = useNavigate()
-  const [items, setItems]         = useState(() => buildMockItems())
+  const location = useLocation()
+  const [items, setItems]         = useState(() => location.state?.items ?? buildMockItems())
   const [showError, setShowError] = useState(false)
 
   function handleChange(updated) {

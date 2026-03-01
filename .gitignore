@@ -34,5 +34,10 @@ hooks/
 constants/
 scripts/
 
+# Environment variables (never commit API keys)
+.env
+.env.local
+.env.*.local
+
 # Claude Code internals
 .claude/
