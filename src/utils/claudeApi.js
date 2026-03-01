@@ -1,6 +1,3 @@
-const API_KEY = import.meta.env.VITE_CLAUDE_API_KEY
-const API_URL = 'https://api.anthropic.com/v1/messages'
-
 const CATEGORY_EMOJI = {
   Produce: '🥬',
   Dairy:   '🥛',
@@ -24,51 +21,70 @@ function stripFences(text) {
   return text.replace(/^```(?:json)?\s*/m, '').replace(/\s*```\s*$/m, '').trim()
 }
 
-function apiHeaders() {
-  return {
-    'x-api-key': API_KEY,
-    'anthropic-version': '2023-06-01',
-    'anthropic-dangerous-direct-browser-calls': 'true',
-    'content-type': 'application/json',
+// On localhost: call Anthropic directly (requires VITE_CLAUDE_API_KEY in .env)
+// In production: call the Netlify Function proxy (no CORS, key stays server-side)
+const isLocal =
+  typeof window !== 'undefined' &&
+  (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+
+async function callClaude(payload) {
+  if (isLocal) {
+    const key = import.meta.env.VITE_CLAUDE_API_KEY
+    if (!key) throw new Error('VITE_CLAUDE_API_KEY not set in .env')
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'x-api-key': key,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-calls': 'true',
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    })
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}))
+      throw new Error(err.error?.message ?? `API error ${res.status}`)
+    }
+    return res.json()
   }
-}
 
-export async function analyzeGroceryImage(base64, mimeType) {
-  if (!API_KEY) throw new Error('VITE_CLAUDE_API_KEY not set')
-
-  const today = localIso()
-  const res = await fetch(API_URL, {
+  // Production: proxy through Netlify Function to avoid CORS
+  const res = await fetch('/.netlify/functions/claude', {
     method: 'POST',
-    headers: apiHeaders(),
-    body: JSON.stringify({
-      model: 'claude-sonnet-4-6',
-      max_tokens: 1024,
-      messages: [{
-        role: 'user',
-        content: [
-          {
-            type: 'image',
-            source: { type: 'base64', media_type: mimeType, data: base64 },
-          },
-          {
-            type: 'text',
-            text: `Today is ${today}. Identify all grocery items visible in this image.
-Return ONLY a JSON array (no markdown, no explanation):
-[{"name":"Spinach","category":"Produce","expiration_date":"YYYY-MM-DD"}]
-Categories must be one of: Produce, Dairy, Meat, Bakery, Frozen, Pantry, Other.
-expiration_date must be YYYY-MM-DD — estimate typical shelf life from today.`,
-          },
-        ],
-      }],
-    }),
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify(payload),
   })
-
   if (!res.ok) {
     const err = await res.json().catch(() => ({}))
     throw new Error(err.error?.message ?? `API error ${res.status}`)
   }
+  return res.json()
+}
 
-  const data = await res.json()
+export async function analyzeGroceryImage(base64, mimeType) {
+  const today = localIso()
+  const data = await callClaude({
+    model: 'claude-sonnet-4-6',
+    max_tokens: 1024,
+    messages: [{
+      role: 'user',
+      content: [
+        {
+          type: 'image',
+          source: { type: 'base64', media_type: mimeType, data: base64 },
+        },
+        {
+          type: 'text',
+          text: `Today is ${today}. Identify all grocery items visible in this image.
+Return ONLY a JSON array (no markdown, no explanation):
+[{"name":"Spinach","category":"Produce","expiration_date":"YYYY-MM-DD"}]
+Categories must be one of: Produce, Dairy, Meat, Bakery, Frozen, Pantry, Other.
+expiration_date must be YYYY-MM-DD — estimate typical shelf life from today.`,
+        },
+      ],
+    }],
+  })
+
   const text = data.content?.[0]?.text ?? ''
   const parsed = JSON.parse(stripFences(text))
 
@@ -82,8 +98,6 @@ expiration_date must be YYYY-MM-DD — estimate typical shelf life from today.`,
 }
 
 export async function generateAIRecipes(pantryItems) {
-  if (!API_KEY) throw new Error('VITE_CLAUDE_API_KEY not set')
-
   const active = pantryItems.filter(i => i.status === 'active')
   if (active.length === 0) return []
 
@@ -95,29 +109,19 @@ export async function generateAIRecipes(pantryItems) {
     return `${i.name} (${days} days left)`
   }).join(', ')
 
-  const res = await fetch(API_URL, {
-    method: 'POST',
-    headers: apiHeaders(),
-    body: JSON.stringify({
-      model: 'claude-sonnet-4-6',
-      max_tokens: 2048,
-      messages: [{
-        role: 'user',
-        content: `I have these grocery items: ${itemList}.
+  const data = await callClaude({
+    model: 'claude-sonnet-4-6',
+    max_tokens: 2048,
+    messages: [{
+      role: 'user',
+      content: `I have these grocery items: ${itemList}.
 Suggest 4 recipes using these items. Prioritize items expiring soonest.
 Return ONLY a JSON array (no markdown, no explanation):
 [{"title":"Recipe Name","emoji":"🍳","usesItems":["Spinach","Carrots"],"otherIngredients":["olive oil","salt"],"steps":["Step 1","Step 2","Step 3"]}]
 usesItems must exactly match names from my item list (case-insensitive ok).`,
-      }],
-    }),
+    }],
   })
 
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}))
-    throw new Error(err.error?.message ?? `API error ${res.status}`)
-  }
-
-  const data = await res.json()
   const text = data.content?.[0]?.text ?? ''
   const parsed = JSON.parse(stripFences(text))
 

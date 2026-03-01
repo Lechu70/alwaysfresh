@@ -61,13 +61,6 @@ export default function Recipes() {
 
   async function handleRefresh() {
     setSearchQuery('')
-    if (!import.meta.env.VITE_CLAUDE_API_KEY) {
-      const fresh = generateRecipes(getItems(), null, true)
-      setAllRecipes(fresh)
-      setRefreshed(true)
-      setTimeout(() => setRefreshed(false), 1500)
-      return
-    }
     setIsLoading(true)
     try {
       const aiRecipes = await generateAIRecipes(getItems())
