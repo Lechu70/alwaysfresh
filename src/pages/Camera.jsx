@@ -51,14 +51,21 @@ export default function Camera() {
     return () => streamRef.current?.getTracks().forEach(t => t.stop())
   }, [])
 
+  // Resize any image source (video/img) to max 1024px before encoding
+  function resizeToBase64(source, srcW, srcH) {
+    const MAX = 1024
+    const scale = Math.min(1, MAX / Math.max(srcW, srcH))
+    const canvas = document.createElement('canvas')
+    canvas.width  = Math.round(srcW * scale)
+    canvas.height = Math.round(srcH * scale)
+    canvas.getContext('2d').drawImage(source, 0, 0, canvas.width, canvas.height)
+    return canvas.toDataURL('image/jpeg', 0.82).split(',')[1]
+  }
+
   function captureFromVideo() {
     const video = videoRef.current
-    const canvas = document.createElement('canvas')
-    canvas.width  = video.videoWidth  || 640
-    canvas.height = video.videoHeight || 480
-    canvas.getContext('2d').drawImage(video, 0, 0)
-    const dataUrl = canvas.toDataURL('image/jpeg', 0.85)
-    return { base64: dataUrl.split(',')[1], mimeType: 'image/jpeg' }
+    const base64 = resizeToBase64(video, video.videoWidth || 640, video.videoHeight || 480)
+    return { base64, mimeType: 'image/jpeg' }
   }
 
   async function runAnalysis(base64, mimeType) {
@@ -85,12 +92,14 @@ export default function Camera() {
   function handleFileUpload(e) {
     const file = e.target.files[0]
     if (!file) return
-    const reader = new FileReader()
-    reader.onload = async () => {
-      const base64 = reader.result.split(',')[1]
-      await runAnalysis(base64, file.type || 'image/jpeg')
+    const img = new Image()
+    const url = URL.createObjectURL(file)
+    img.onload = async () => {
+      URL.revokeObjectURL(url)
+      const base64 = resizeToBase64(img, img.naturalWidth, img.naturalHeight)
+      await runAnalysis(base64, 'image/jpeg')
     }
-    reader.readAsDataURL(file)
+    img.src = url
   }
 
   if (analyzing) return <AnalyzingOverlay />
