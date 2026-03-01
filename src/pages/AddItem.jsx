@@ -14,6 +14,11 @@ const CATEGORY_EMOJI = {
   Other:   '📦',
 }
 
+const CATEGORY_ES = {
+  Produce: 'Verduras', Dairy: 'Lácteos', Meat: 'Carnes',
+  Bakery: 'Panadería', Frozen: 'Congelados', Pantry: 'Despensa', Other: 'Otro',
+}
+
 const FieldLabel = ({ children }) => (
   <span className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">
     {children}
@@ -50,21 +55,21 @@ export default function AddItem() {
     <div className="min-h-screen bg-gray-50 flex flex-col max-w-[430px] mx-auto font-sans">
 
       <header className="bg-white border-b border-gray-100 px-5 pt-5 pb-4 sticky top-0 z-10">
-        <h1 className="text-xl font-bold text-gray-900 tracking-tight">Add Item</h1>
+        <h1 className="text-xl font-bold text-gray-900 tracking-tight">Agregar Producto</h1>
       </header>
 
       <main className="flex-1 px-4 py-2 pb-36 flex flex-col">
 
-        <SectionTitle>Item Details</SectionTitle>
+        <SectionTitle>Detalles</SectionTitle>
 
         {/* Name */}
         <div className="bg-white rounded-2xl px-4 py-3.5 shadow-sm mb-2.5">
-          <FieldLabel>Name <span className="text-red-400 normal-case">*</span></FieldLabel>
+          <FieldLabel>Nombre <span className="text-red-400 normal-case">*</span></FieldLabel>
           <input
             type="text"
             value={form.name}
             onChange={set('name')}
-            placeholder="e.g. Spinach, Whole Milk…"
+            placeholder="ej. Espinaca, Leche entera…"
             autoFocus
             className="w-full mt-2 text-[15px] text-gray-900 placeholder-gray-300 bg-transparent focus:outline-none"
           />
@@ -72,25 +77,25 @@ export default function AddItem() {
 
         {/* Category */}
         <div className="bg-white rounded-2xl px-4 py-3.5 shadow-sm mb-2.5">
-          <FieldLabel>Category <span className="text-red-400 normal-case">*</span></FieldLabel>
+          <FieldLabel>Categoría <span className="text-red-400 normal-case">*</span></FieldLabel>
           <select
             value={form.category}
             onChange={set('category')}
             className="w-full mt-2 text-[15px] bg-transparent focus:outline-none cursor-pointer"
             style={{ color: form.category ? '#111827' : '#d1d5db' }}
           >
-            <option value="" disabled>Select category…</option>
+            <option value="" disabled>Seleccionar categoría…</option>
             {CATEGORIES.map(c => (
-              <option key={c} value={c} style={{ color: '#111827' }}>{c}</option>
+              <option key={c} value={c} style={{ color: '#111827' }}>{CATEGORY_ES[c]}</option>
             ))}
           </select>
         </div>
 
-        <SectionTitle>Expiration</SectionTitle>
+        <SectionTitle>Vencimiento</SectionTitle>
 
         {/* Expiration date */}
         <div className="bg-white rounded-2xl px-4 py-3.5 shadow-sm mb-2.5">
-          <FieldLabel>Expiration Date <span className="text-red-400 normal-case">*</span></FieldLabel>
+          <FieldLabel>Fecha de Vencimiento <span className="text-red-400 normal-case">*</span></FieldLabel>
           <input
             type="date"
             value={form.expiration_date}
@@ -99,21 +104,21 @@ export default function AddItem() {
           />
         </div>
 
-        <SectionTitle>Optional</SectionTitle>
+        <SectionTitle>Opcional</SectionTitle>
 
         {/* Notes */}
         <div className="bg-white rounded-2xl px-4 py-3.5 shadow-sm">
-          <FieldLabel>Notes</FieldLabel>
+          <FieldLabel>Notas</FieldLabel>
           <textarea
             value={form.notes}
             onChange={set('notes')}
-            placeholder="e.g. opened, half used…"
+            placeholder="ej. abierto, a medias…"
             rows={2}
             className="w-full mt-2 text-[15px] text-gray-900 placeholder-gray-300 bg-transparent focus:outline-none resize-none"
           />
         </div>
 
-        <p className="text-[11px] text-gray-300 text-center mt-4">* Required fields</p>
+        <p className="text-[11px] text-gray-300 text-center mt-4">* Campos obligatorios</p>
 
       </main>
 
@@ -123,14 +128,14 @@ export default function AddItem() {
           onClick={() => navigate('/pantry')}
           className="flex-1 py-3.5 bg-gray-100 text-gray-600 font-bold rounded-2xl text-[15px] active:scale-[0.98] transition-all"
         >
-          Back
+          Volver
         </button>
         <button
           onClick={handleSubmit}
           disabled={!canSubmit}
           className="flex-[2] py-3.5 bg-green-600 text-white font-bold rounded-2xl text-[15px] disabled:opacity-35 disabled:cursor-not-allowed active:scale-[0.98] transition-all"
         >
-          Add Item
+          Agregar
         </button>
       </div>
 

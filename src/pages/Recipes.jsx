@@ -12,7 +12,7 @@ function RecipeCard({ recipe }) {
 
       <h3 className="text-[16px] font-bold text-gray-900 mb-3">
         {recipe.emoji} {recipe.title}
-        {recipe.isAI && <span className="ml-1.5 text-[12px] font-semibold text-purple-500">✨ AI</span>}
+        {recipe.isAI && <span className="ml-1.5 text-[12px] font-semibold text-purple-500">✨ IA</span>}
       </h3>
 
       <div className="flex flex-wrap gap-1.5 mb-4">
@@ -46,7 +46,7 @@ function RecipeCard({ recipe }) {
         onClick={() => setExpanded(e => !e)}
         className="w-full py-2.5 bg-green-600 text-white text-[13px] font-bold rounded-xl active:scale-[0.98] transition-all"
       >
-        {expanded ? 'Hide Recipe' : 'View Recipe'}
+        {expanded ? 'Ocultar receta' : 'Ver receta'}
       </button>
 
     </div>
@@ -95,8 +95,8 @@ export default function Recipes() {
     <div className="min-h-screen bg-gray-50 flex flex-col max-w-[430px] mx-auto font-sans">
 
       <header className="bg-white border-b border-gray-100 px-5 pt-5 pb-4 sticky top-0 z-10">
-        <h1 className="text-xl font-bold text-gray-900 tracking-tight">Recipes for You</h1>
-        <p className="text-sm text-gray-500 mt-0.5">Based on what's in your pantry</p>
+        <h1 className="text-xl font-bold text-gray-900 tracking-tight">Recetas para Ti</h1>
+        <p className="text-sm text-gray-500 mt-0.5">Basadas en tu despensa</p>
       </header>
 
       <main className="flex-1 px-4 py-4 pb-24 flex flex-col gap-3">
@@ -108,7 +108,7 @@ export default function Recipes() {
             type="text"
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
-            placeholder="Search by ingredient…"
+            placeholder="Buscar por ingrediente…"
             className="flex-1 text-sm text-gray-900 placeholder-gray-400 bg-transparent focus:outline-none"
           />
           {searchQuery && (
@@ -140,8 +140,8 @@ export default function Recipes() {
         <div className="flex items-center justify-between">
           <p className="text-xs text-gray-400">
             {q
-              ? `${displayRecipes.length} recipe${displayRecipes.length !== 1 ? 's' : ''} with "${searchQuery}"`
-              : `${allRecipes.length} recipe${allRecipes.length !== 1 ? 's' : ''} from your pantry`
+              ? `${displayRecipes.length} receta${displayRecipes.length !== 1 ? 's' : ''} con "${searchQuery}"`
+              : `${allRecipes.length} receta${allRecipes.length !== 1 ? 's' : ''} de tu despensa`
             }
           </p>
           <button
@@ -151,7 +151,7 @@ export default function Recipes() {
           >
             {isLoading
               ? <span className="inline-block animate-spin">↻</span>
-              : refreshed ? '✓ Updated' : '↻ Refresh'
+              : refreshed ? '✓ Actualizado' : '↻ Actualizar'
             }
           </button>
         </div>
@@ -161,15 +161,15 @@ export default function Recipes() {
           <div className="flex-1 flex flex-col items-center justify-center gap-3 py-20">
             <span className="text-5xl">🍳</span>
             <p className="text-gray-400 text-sm text-center leading-relaxed">
-              No recipes yet.<br />Add items to your pantry first.
+              Sin recetas aún.<br />Agrega productos a tu despensa primero.
             </p>
           </div>
         ) : displayRecipes.length === 0 ? (
           <div className="flex flex-col items-center gap-2 py-12">
             <span className="text-4xl">🔍</span>
             <p className="text-gray-400 text-sm text-center">
-              No recipes found for <span className="font-semibold">"{searchQuery}"</span>.<br />
-              Try another ingredient from your pantry.
+              No se encontraron recetas con <span className="font-semibold">"{searchQuery}"</span>.<br />
+              Prueba otro ingrediente de tu despensa.
             </p>
           </div>
         ) : (

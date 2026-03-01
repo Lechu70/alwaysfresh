@@ -19,8 +19,8 @@ export function getUrgency(days) {
 }
 
 export function formatExpiry(days) {
-  if (days < 0)  return 'Expired'
-  if (days === 0) return 'Today'
-  if (days === 1) return '1 day left'
-  return `${days} days left`
+  if (days < 0)  return 'Vencido'
+  if (days === 0) return 'Hoy'
+  if (days === 1) return '1 día restante'
+  return `${days} días restantes`
 }

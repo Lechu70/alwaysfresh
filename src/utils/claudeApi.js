@@ -77,8 +77,8 @@ export async function analyzeGroceryImage(base64, mimeType) {
           type: 'text',
           text: `Today is ${today}. Identify all grocery items visible in this image.
 Return ONLY a JSON array (no markdown, no explanation):
-[{"name":"Spinach","category":"Produce","expiration_date":"YYYY-MM-DD"}]
-Categories must be one of: Produce, Dairy, Meat, Bakery, Frozen, Pantry, Other.
+[{"name":"Espinaca","category":"Produce","expiration_date":"YYYY-MM-DD"}]
+Item names must be in Spanish. Categories must be one of (in English): Produce, Dairy, Meat, Bakery, Frozen, Pantry, Other.
 expiration_date must be YYYY-MM-DD — estimate typical shelf life from today.`,
         },
       ],
@@ -114,11 +114,11 @@ export async function generateAIRecipes(pantryItems) {
     max_tokens: 2048,
     messages: [{
       role: 'user',
-      content: `I have these grocery items: ${itemList}.
-Suggest 4 recipes using these items. Prioritize items expiring soonest.
-Return ONLY a JSON array (no markdown, no explanation):
-[{"title":"Recipe Name","emoji":"🍳","usesItems":["Spinach","Carrots"],"otherIngredients":["olive oil","salt"],"steps":["Step 1","Step 2","Step 3"]}]
-usesItems must exactly match names from my item list (case-insensitive ok).`,
+      content: `Tengo estos productos: ${itemList}.
+Sugiere 4 recetas usando estos productos. Prioriza los que vencen antes.
+Responde SOLO con un array JSON en español (sin markdown, sin explicación):
+[{"title":"Nombre de la receta","emoji":"🍳","usesItems":["Espinaca","Zanahoria"],"otherIngredients":["aceite de oliva","sal"],"steps":["Paso 1","Paso 2","Paso 3"]}]
+usesItems debe coincidir exactamente con los nombres de mi lista (sin distinción de mayúsculas).`,
     }],
   })
 

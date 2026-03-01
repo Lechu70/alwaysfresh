@@ -7,23 +7,28 @@ import { daysLeft, getUrgency, formatExpiry } from '../utils/pantryUtils'
 const SECTIONS = [
   {
     urgency: 'red',
-    label: '⚠️ Use Now',
+    label: '⚠️ Usar Ya',
     border: 'border-l-red-500',
     tag: 'bg-red-50 text-red-500',
   },
   {
     urgency: 'yellow',
-    label: '🟡 Use Soon',
+    label: '🟡 Usar Pronto',
     border: 'border-l-amber-400',
     tag: 'bg-amber-50 text-amber-600',
   },
   {
     urgency: 'green',
-    label: '✅ Fresh',
+    label: '✅ Fresco',
     border: 'border-l-green-500',
     tag: 'bg-green-50 text-green-700',
   },
 ]
+
+const CATEGORY_ES = {
+  Produce: 'Verduras', Dairy: 'Lácteos', Meat: 'Carnes',
+  Bakery: 'Panadería', Frozen: 'Congelados', Pantry: 'Despensa', Other: 'Otro',
+}
 
 function ItemCard({ item, onMarkUsed }) {
   const days = daysLeft(item.expiration_date)
@@ -41,7 +46,7 @@ function ItemCard({ item, onMarkUsed }) {
         </p>
         <div className="flex items-center gap-1.5 mt-1.5">
           <span className="text-[11px] font-semibold bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">
-            {item.category}
+            {CATEGORY_ES[item.category] ?? item.category}
           </span>
           <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${section.tag}`}>
             {formatExpiry(days)}
@@ -53,7 +58,7 @@ function ItemCard({ item, onMarkUsed }) {
         onClick={() => onMarkUsed(item.item_id)}
         className="text-[11px] font-bold text-gray-500 bg-gray-100 hover:bg-gray-200 rounded-xl px-3 py-2 whitespace-nowrap active:scale-95 transition-all flex-shrink-0"
       >
-        ✓ Used
+        ✓ Usado
       </button>
     </div>
   )
@@ -83,9 +88,9 @@ export default function Pantry() {
     <div className="min-h-screen bg-gray-50 flex flex-col max-w-[430px] mx-auto font-sans">
 
       <header className="bg-white border-b border-gray-100 px-5 pt-5 pb-4 sticky top-0 z-10">
-        <h1 className="text-xl font-bold text-gray-900 tracking-tight">My Pantry</h1>
+        <h1 className="text-xl font-bold text-gray-900 tracking-tight">Mi Despensa</h1>
         <p className="text-sm text-gray-500 mt-0.5">
-          {totalActive === 0 ? 'No items' : `${totalActive} item${totalActive !== 1 ? 's' : ''} active`}
+          {totalActive === 0 ? 'Sin productos' : `${totalActive} producto${totalActive !== 1 ? 's' : ''} activo${totalActive !== 1 ? 's' : ''}`}
         </p>
       </header>
 
@@ -94,7 +99,7 @@ export default function Pantry() {
           <div className="flex-1 flex flex-col items-center justify-center gap-3 py-24">
             <span className="text-5xl">📦</span>
             <p className="text-gray-400 text-sm text-center leading-relaxed">
-              Your pantry is empty.<br />Tap + to add your first item.
+              Tu despensa está vacía.<br />Toca + para agregar tu primer producto.
             </p>
           </div>
         ) : (

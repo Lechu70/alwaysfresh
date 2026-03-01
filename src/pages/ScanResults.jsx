@@ -52,6 +52,11 @@ const CATEGORY_STYLE = {
   Other:   'bg-gray-100 text-gray-600',
 }
 
+const CATEGORY_ES = {
+  Produce: 'Verduras', Dairy: 'Lácteos', Meat: 'Carnes',
+  Bakery: 'Panadería', Frozen: 'Congelados', Pantry: 'Despensa', Other: 'Otro',
+}
+
 function ItemCard({ item, hasError, onChange }) {
   const [editingName, setEditingName]   = useState(false)
   const [editingExpiry, setEditingExpiry] = useState(false)
@@ -97,7 +102,7 @@ function ItemCard({ item, hasError, onChange }) {
         <div className="flex-1 bg-gray-50 rounded-xl px-3 py-2.5">
           <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Category</p>
           <span className={`text-[12px] font-semibold px-2 py-0.5 rounded-full ${CATEGORY_STYLE[item.category] ?? 'bg-gray-100 text-gray-600'}`}>
-            {item.category}
+            {CATEGORY_ES[item.category] ?? item.category}
           </span>
         </div>
 
@@ -107,7 +112,7 @@ function ItemCard({ item, hasError, onChange }) {
           <p className={`text-[10px] font-bold uppercase tracking-wider mb-1.5 ${
             hasError && missingExpiry ? 'text-red-500' : 'text-gray-400'
           }`}>
-            {hasError && missingExpiry ? 'Expires ✕ Required' : 'Expires'}
+            {hasError && missingExpiry ? 'Vence ✕ Requerido' : 'Vence'}
           </p>
 
           {editingExpiry ? (
@@ -136,7 +141,7 @@ function ItemCard({ item, hasError, onChange }) {
                 hasError ? 'text-red-400' : 'text-amber-500'
               }`}
             >
-              Tap to add →
+              Toca para agregar →
             </button>
           )}
         </div>
@@ -193,9 +198,9 @@ export default function ScanResults() {
             ←
           </button>
           <div>
-            <h1 className="text-xl font-bold text-gray-900 tracking-tight">Items Found</h1>
+            <h1 className="text-xl font-bold text-gray-900 tracking-tight">Productos Encontrados</h1>
             <p className="text-sm text-gray-500 mt-0.5">
-              AI identified {items.length} items — review and confirm
+              La IA identificó {items.length} producto{items.length !== 1 ? 's' : ''} — revisa y confirma
             </p>
           </div>
         </div>
@@ -204,7 +209,7 @@ export default function ScanResults() {
       {/* Validation error banner */}
       {showError && (
         <div className="bg-red-50 border-b border-red-200 px-5 py-3 flex items-center gap-2 text-red-600 text-[13px] font-semibold flex-shrink-0">
-          ⚠️ Please complete all required fields
+          ⚠️ Por favor completa todos los campos requeridos
         </div>
       )}
 
@@ -222,7 +227,7 @@ export default function ScanResults() {
           onClick={() => navigate('/add-item')}
           className="w-full py-3.5 border-2 border-green-600 text-green-600 font-bold rounded-2xl text-sm mt-1 active:scale-[0.98] transition-all"
         >
-          + Add item manually
+          + Agregar manualmente
         </button>
       </main>
 
@@ -232,8 +237,8 @@ export default function ScanResults() {
           showError ? 'text-red-500' : 'text-gray-400'
         }`}>
           {showError
-            ? `${incompleteCount} item${incompleteCount !== 1 ? 's' : ''} need${incompleteCount === 1 ? 's' : ''} attention`
-            : `${items.length - incompleteCount} item${items.length - incompleteCount !== 1 ? 's' : ''} ready to add`
+            ? `${incompleteCount} producto${incompleteCount !== 1 ? 's' : ''} necesita${incompleteCount !== 1 ? 'n' : ''} atención`
+            : `${items.length - incompleteCount} producto${items.length - incompleteCount !== 1 ? 's' : ''} listo${items.length - incompleteCount !== 1 ? 's' : ''} para agregar`
           }
         </p>
         <button
@@ -241,7 +246,7 @@ export default function ScanResults() {
           disabled={showError && incompleteCount > 0}
           className="w-full py-4 bg-green-600 text-white font-bold rounded-2xl text-[15px] disabled:opacity-35 disabled:cursor-not-allowed active:scale-[0.98] transition-all"
         >
-          Confirm All
+          Confirmar Todo
         </button>
       </div>
 

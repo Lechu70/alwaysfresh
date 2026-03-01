@@ -31,9 +31,9 @@ const IconRecipes = ({ filled }) => (
 )
 
 const tabs = [
-  { id: 'home',    label: 'Home',    path: '/',         Icon: IconHome },
-  { id: 'pantry',  label: 'Pantry',  path: '/pantry',   Icon: IconPantry },
-  { id: 'recipes', label: 'Recipes', path: '/recipes',  Icon: IconRecipes },
+  { id: 'home',    label: 'Inicio',   path: '/',         Icon: IconHome },
+  { id: 'pantry',  label: 'Despensa', path: '/pantry',   Icon: IconPantry },
+  { id: 'recipes', label: 'Recetas',  path: '/recipes',  Icon: IconRecipes },
 ]
 
 export default function BottomNav({ active }) {

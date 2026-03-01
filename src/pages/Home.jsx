@@ -5,11 +5,11 @@ import { getItems } from '../store/pantry'
 import { daysLeft, formatExpiry } from '../utils/pantryUtils'
 import { generateRecipes } from '../utils/recipeGenerator'
 
-function timeOfDay() {
+function greeting() {
   const h = new Date().getHours()
-  if (h < 12) return 'morning'
-  if (h < 18) return 'afternoon'
-  return 'evening'
+  if (h < 12) return 'Buenos días'
+  if (h < 18) return 'Buenas tardes'
+  return 'Buenas noches'
 }
 
 const BADGE = {
@@ -49,7 +49,7 @@ export default function Home() {
     <div className="min-h-screen bg-gray-50 flex flex-col max-w-[430px] mx-auto font-sans">
 
       <header className="bg-white border-b border-gray-100 px-5 pt-5 pb-4 sticky top-0 z-10">
-        <p className="text-sm text-gray-500">Good {timeOfDay()}, {name} 👋</p>
+        <p className="text-sm text-gray-500">{greeting()}, {name} 👋</p>
         <h1 className="text-xl font-bold text-gray-900 tracking-tight mt-0.5">Always Fresh</h1>
       </header>
 
@@ -58,15 +58,15 @@ export default function Home() {
         {/* Expiring Soon */}
         <section className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-[15px] font-bold text-gray-900">⚠️ Expiring Soon</h2>
+            <h2 className="text-[15px] font-bold text-gray-900">⚠️ Por Vencer</h2>
             <button onClick={() => navigate('/pantry')} className="text-xs font-semibold text-green-600">
-              See all →
+              Ver todo →
             </button>
           </div>
 
           {expiring.length === 0 ? (
             <p className="text-sm text-gray-400 text-center py-4">
-              Nothing expiring soon — you're all good! 🎉
+              ¡Nada por vencer pronto — todo bien! 🎉
             </p>
           ) : (
             <div className="flex flex-col divide-y divide-gray-100">
@@ -86,15 +86,15 @@ export default function Home() {
         {/* Recommended Recipes */}
         <section className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-[15px] font-bold text-gray-900">👨‍🍳 Recommended Recipes</h2>
+            <h2 className="text-[15px] font-bold text-gray-900">👨‍🍳 Recetas Recomendadas</h2>
             <button onClick={() => navigate('/recipes')} className="text-xs font-semibold text-green-600">
-              See all →
+              Ver todo →
             </button>
           </div>
 
           {recipePreview.length === 0 ? (
             <p className="text-sm text-gray-400 text-center py-4">
-              Add items to your pantry to see recipe suggestions.
+              Agrega productos a tu despensa para ver sugerencias.
             </p>
           ) : (
             <div className="flex flex-col divide-y divide-gray-100">
@@ -109,7 +109,7 @@ export default function Home() {
                     <p className="text-sm font-semibold text-gray-900 truncate">{recipe.title}</p>
                     {recipe.matchedItems.length > 0 && (
                       <p className="text-xs text-amber-600 font-medium mt-0.5 truncate">
-                        Uses: {recipe.matchedItems.map(i => i.name).join(', ')}
+                        Usa: {recipe.matchedItems.map(i => i.name).join(', ')}
                       </p>
                     )}
                   </div>
@@ -128,7 +128,7 @@ export default function Home() {
           onClick={() => navigate('/camera')}
           className="w-full bg-green-600 text-white font-bold py-4 rounded-2xl text-[15px] flex items-center justify-center gap-2.5 shadow-[0_4px_16px_rgba(22,163,74,0.35)] active:scale-[0.98] transition-all"
         >
-          📷 Scan Items
+          📷 Escanear
         </button>
       </div>
 

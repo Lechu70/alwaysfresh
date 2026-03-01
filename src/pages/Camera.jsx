@@ -22,8 +22,8 @@ function AnalyzingOverlay() {
   return (
     <div className="fixed inset-0 bg-black flex flex-col items-center justify-center gap-4 z-50">
       <span className="text-5xl animate-bounce">🔍</span>
-      <p className="text-white font-semibold text-base">Analyzing your photo…</p>
-      <p className="text-gray-400 text-sm">Identifying items</p>
+      <p className="text-white font-semibold text-base">Analizando tu foto…</p>
+      <p className="text-gray-400 text-sm">Identificando productos</p>
     </div>
   )
 }
@@ -119,10 +119,10 @@ export default function Camera() {
           <div className="absolute inset-0 bg-gray-900 flex flex-col items-center justify-center gap-5 px-10">
             <span className="text-5xl">📷</span>
             <p className="text-white text-center text-sm leading-relaxed">
-              Camera not available.<br />Upload a photo to continue.
+              Cámara no disponible.<br />Sube una foto para continuar.
             </p>
             <label className="bg-white text-gray-900 font-semibold px-6 py-3 rounded-2xl text-sm cursor-pointer active:scale-95 transition-transform">
-              Choose Photo
+              Elegir Foto
               <input type="file" accept="image/*" className="hidden" onChange={handleFileUpload} />
             </label>
           </div>
@@ -154,7 +154,7 @@ export default function Camera() {
               className="absolute left-0 right-0 text-center text-white/75 text-[13px] font-medium z-20"
               style={{ bottom: '150px' }}
             >
-              Point at one item or a full haul
+              Apunta a un producto o a varios
             </p>
           </>
         )}

@@ -25,7 +25,7 @@ export default function AddItemSheet({ open, onClose }) {
       >
         <div className="w-10 h-1 bg-gray-200 rounded-full mx-auto mb-5" />
 
-        <h3 className="text-base font-bold text-gray-900 mb-4">Add Item</h3>
+        <h3 className="text-base font-bold text-gray-900 mb-4">Agregar Producto</h3>
 
         <div className="flex flex-col gap-3">
 
@@ -35,8 +35,8 @@ export default function AddItemSheet({ open, onClose }) {
           >
             <span className="text-2xl w-10 text-center">✏️</span>
             <div>
-              <p className="font-semibold text-gray-900 text-sm">Add Manually</p>
-              <p className="text-xs text-gray-400 mt-0.5">Fill in item details by hand</p>
+              <p className="font-semibold text-gray-900 text-sm">Ingresar manualmente</p>
+              <p className="text-xs text-gray-400 mt-0.5">Completa los detalles a mano</p>
             </div>
           </button>
 
@@ -46,8 +46,8 @@ export default function AddItemSheet({ open, onClose }) {
           >
             <span className="text-2xl w-10 text-center">📷</span>
             <div>
-              <p className="font-semibold text-gray-900 text-sm">Scan Items</p>
-              <p className="text-xs text-gray-400 mt-0.5">Point at one item or a full haul</p>
+              <p className="font-semibold text-gray-900 text-sm">Escanear productos</p>
+              <p className="text-xs text-gray-400 mt-0.5">Apunta a uno o varios productos</p>
             </div>
           </button>
 
